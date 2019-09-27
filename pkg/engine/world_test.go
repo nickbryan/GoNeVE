@@ -52,6 +52,20 @@ func (s *stub) Render(ipl float64) {
 	})
 }
 
+func (s *stub) PreRender(ipl float64) {
+	s.calls = append(s.calls, callAssertion{
+		callType: "pre_render",
+		dt:       ipl,
+	})
+}
+
+func (s *stub) PostRender(ipl float64) {
+	s.calls = append(s.calls, callAssertion{
+		callType: "post_render",
+		dt:       ipl,
+	})
+}
+
 func TestWorld(t *testing.T) {
 	assertCalls := func(t *testing.T, got, want []callAssertion) {
 		t.Helper()
@@ -152,7 +166,7 @@ func TestWorld(t *testing.T) {
 		})
 	})
 
-	t.Run("can add a renderer", func(t *testing.T) {
+	t.Run("can add a Renderer", func(t *testing.T) {
 		s := &stub{}
 		world := NewWorld()
 		world.AddRenderer(s)
@@ -162,7 +176,7 @@ func TestWorld(t *testing.T) {
 		})
 	})
 
-	t.Run("can add multiple renderers", func(t *testing.T) {
+	t.Run("can add multiple Renderers", func(t *testing.T) {
 		s := &stub{}
 		world := NewWorld()
 		world.AddRenderer(s)
@@ -171,6 +185,58 @@ func TestWorld(t *testing.T) {
 		assertCalls(t, s.calls, []callAssertion{
 			{callType: "render", dt: 0.01},
 			{callType: "render", dt: 0.01},
+		})
+	})
+
+	t.Run("can add a PreRenderer that is called before any Renderers", func(t *testing.T) {
+		s := &stub{}
+		world := NewWorld()
+		world.AddRenderer(s)
+		world.AddPreRenderer(s)
+		world.Render(0.01)
+		assertCalls(t, s.calls, []callAssertion{
+			{callType: "pre_render", dt: 0.01},
+			{callType: "render", dt: 0.01},
+		})
+	})
+
+	t.Run("can add multiple PreRenderers", func(t *testing.T) {
+		s := &stub{}
+		world := NewWorld()
+		world.AddRenderer(s)
+		world.AddPreRenderer(s)
+		world.AddPreRenderer(s)
+		world.Render(0.01)
+		assertCalls(t, s.calls, []callAssertion{
+			{callType: "pre_render", dt: 0.01},
+			{callType: "pre_render", dt: 0.01},
+			{callType: "render", dt: 0.01},
+		})
+	})
+
+	t.Run("can add a PostRenderer that is called after any Renderers", func(t *testing.T) {
+		s := &stub{}
+		world := NewWorld()
+		world.AddRenderer(s)
+		world.AddPostRenderer(s)
+		world.Render(0.01)
+		assertCalls(t, s.calls, []callAssertion{
+			{callType: "render", dt: 0.01},
+			{callType: "post_render", dt: 0.01},
+		})
+	})
+
+	t.Run("can add multiple PostRenderers", func(t *testing.T) {
+		s := &stub{}
+		world := NewWorld()
+		world.AddRenderer(s)
+		world.AddPostRenderer(s)
+		world.AddPostRenderer(s)
+		world.Render(0.01)
+		assertCalls(t, s.calls, []callAssertion{
+			{callType: "render", dt: 0.01},
+			{callType: "post_render", dt: 0.01},
+			{callType: "post_render", dt: 0.01},
 		})
 	})
 }

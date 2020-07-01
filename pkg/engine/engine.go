@@ -1,6 +1,10 @@
 package engine
 
-import "github.com/nickbryan/GoNeVE/pkg/event"
+import (
+	"time"
+
+	"github.com/nickbryan/GoNeVE/pkg/event"
+)
 
 // Publisher is the interface that wraps the Publish method.
 //
@@ -25,8 +29,8 @@ type PublishSubscriber interface {
 
 // Engine is responsible for handling the main game loop and managing the World.
 type Engine struct {
+	*World
 	simStepper SimulationStepper
-	world      *World
 	running    bool
 }
 
@@ -42,7 +46,7 @@ func New(opts ...Option) *Engine {
 		simStepper: options.simStepper,
 	}
 
-	e.world = NewWorld()
+	e.World = NewWorld()
 
 	return e
 }
@@ -50,9 +54,10 @@ func New(opts ...Option) *Engine {
 // Run will call the SimulationStepper until the Engine is told to Stop.
 func (e *Engine) Run() {
 	e.running = true
+	start := time.Now()
 
 	for e.running {
-		e.simStepper.Step(e.world, e.world, 0)
+		e.simStepper.Step(e.World, e.World, time.Since(start))
 	}
 }
 

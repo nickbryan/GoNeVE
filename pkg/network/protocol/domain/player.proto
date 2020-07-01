@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package domain;
+
+option go_package = "github.com/nickbryan/GoNeVE/pkg/network/grpc/domain";
+
+import "pkg/network/protocol/domain/position.proto";
+
+message LoginRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message LoginResponse {
+    enum Status {
+        OK = 0;
+        DENIED = 1;
+    }
+
+    Status status = 1;
+    string message = 2;
+    string id = 3;
+}
+
+message MoveCommand {
+    string id = 1;
+    Position position = 2;
+}

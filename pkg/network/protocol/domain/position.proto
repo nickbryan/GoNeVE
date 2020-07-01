@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package domain;
+
+option go_package = "github.com/nickbryan/GoNeVE/pkg/network/grpc/domain";
+
+message Position {
+    double X = 1;
+    double Y = 2;
+    double Z = 3;
+}

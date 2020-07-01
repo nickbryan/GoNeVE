@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package service;
+
+option go_package = "github.com/nickbryan/GoNeVE/pkg/network/grpc/service";
+
+import "pkg/network/protocol/domain/player.proto";
+
+service Player {
+    rpc Login(domain.LoginRequest) returns (domain.LoginResponse);
+    rpc SyncMovement(stream domain.MoveCommand) returns (stream domain.MoveCommand);
+}

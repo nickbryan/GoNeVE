@@ -6,6 +6,9 @@ import (
 	"testing"
 )
 
+// TODO: refactor message to be an interface that has a type function that should be set like engo?
+// TODO: improve concurrent call performance of the benchmark, maybe use channels and a go routine to manage them?
+
 func TestNewManager(t *testing.T) {
 	t.Run("returns a pointer to a new Manager", func(t *testing.T) {
 		got := reflect.TypeOf(NewManager())

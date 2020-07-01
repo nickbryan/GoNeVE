@@ -25,7 +25,6 @@ type System struct {
 	keyPressListeners []keyPressListener
 }
 
-
 // CreateSystem creates a new System and subscribes the keyCallback to the KeyPressedEvent and KeyReleasedEvent
 // via the passed in Subscriber.
 func CreateSystem(subscriber engine.Subscriber) *System {
